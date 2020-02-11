@@ -67,7 +67,7 @@ class Ui_new_contact_form(object):
 
     def retranslateUi(self, new_contact_form):
         _translate = QtCore.QCoreApplication.translate
-        new_contact_form.setWindowTitle(_translate("new_contact_form", "Dialog"))
+        new_contact_form.setWindowTitle(_translate("new_contact_form", "New Contact"))
         self.surname_label.setText(_translate("new_contact_form", "Surname"))
         self.name_lineEdit.setPlaceholderText(_translate("new_contact_form", "John"))
         self.name_label.setText(_translate("new_contact_form", "Name"))
