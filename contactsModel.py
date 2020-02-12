@@ -27,8 +27,8 @@ class ContactsModel:
         # NB: contact is a ContactModel obj
         self.contacts_db.addContact(contact)
 
-    def getAllContacts(self):
+    def getAllContacts(self, field_to_sort='name', mode='ASC'):
         # get all contacts in the contact db
-        return self.contacts_db.getAllContacts()
+        return self.contacts_db.getAllContacts(field_to_sort, mode)
 
 

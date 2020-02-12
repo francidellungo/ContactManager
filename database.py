@@ -76,7 +76,8 @@ class Database:
 
     def getAllContacts(self, field_to_sort='name', mode='ASC'):
         # return a list of contacts with all fields (ordered by name mode ASC or DESC)
-        query = 'SELECT * FROM contacts ORDER BY ' + field_to_sort + ' ' + mode
+        field_2 = ('surname' if field_to_sort == 'name' else 'name')
+        query = 'SELECT * FROM contacts ORDER BY ' + field_to_sort + ' ' + mode + ' , ' + field_2
         all_contacts = self.connection.execute(query)
         return all_contacts
 

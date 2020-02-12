@@ -26,9 +26,10 @@ class ContactManagerView(QMainWindow):
 
         # connect buttons to slots
         self.ui.newContact_pb.clicked.connect(self.createNewContact)
+        self.ui.sort_combobox.currentIndexChanged.connect(self.sortBy)
 
-    def showContacts(self):
-        contacts = self.model.getAllContacts()
+    def showContacts(self, contacts_=None):
+        contacts = (contacts_ if contacts_ is not None else self.model.getAllContacts())
         for contact in contacts:
             new_contact = QtWidgets.QPushButton(self.ui.contacts_scrollAreaW)
             new_contact.setFlat(True)
@@ -43,8 +44,13 @@ class ContactManagerView(QMainWindow):
             self.ui.contacts_layout.addWidget(new_contact)
             new_contact.clicked.connect(self.clicked)
 
-    def refreshContacts(self):
-        pass
+    def refreshContacts(self, contacts=None):
+        for i in reversed(range(self.ui.contacts_layout.count())):
+            item = self.ui.contacts_layout.itemAt(i).widget()
+            item.deleteLater()
+            # self.ui.contacts_layout.removeWidget(item)
+        print('removed all contacts', self.ui.contacts_layout.count())
+        self.showContacts(contacts)
 
     def addRow(self, name, surname):
         """
@@ -63,10 +69,15 @@ class ContactManagerView(QMainWindow):
         line.setObjectName("line")
         self.ui.contacts_layout.addWidget(line)
         self.ui.contacts_layout.addWidget(new_contact)
-        new_contact.clicked.connect(self.clicked)
+        # new_contact.clicked.connect(self.clicked)
 
-    def sortBy(self, field, mode):
+    def sortBy(self, field, mode='ASC'):
         # field to sort by
+        # print('sort by', field)
+        # TODO sort also by number or email ??
+        field_to_sort = ('name' if field == 0 else 'surname')
+        contacts = self.model.getAllContacts(field_to_sort)
+        self.refreshContacts(contacts)
         pass
 
     def clicked(self):
