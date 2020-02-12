@@ -1,14 +1,16 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from mainWindow_ui import Ui_MainWindow
-from formDialog_ui import Ui_new_contact_form
-# from database import Database
+from ui.mainWindow_ui import Ui_MainWindow
+from ui.formDialog_ui import Ui_new_contact_form
 from contactsModel import ContactsModel, ContactModel
 import sys
 
 # TODO remove this at the end of the project
 """
 All functions and classes names are thisKindOfTypo, and variables are this_kind_of_typo
+"""
+"""
+See https://www.tutorialspoint.com/pyqt/pyqt_qstackedwidget.htm for QStackedWidget to switch between windows
 """
 
 
@@ -18,12 +20,9 @@ class ContactManagerView(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-
         # db of contacts
         self.model = ContactsModel()
         self.showContacts()
-        # self.model = Database()
-        # self.model.createTable()
 
         # connect buttons to slots
         self.ui.newContact_pb.clicked.connect(self.createNewContact)
@@ -31,10 +30,21 @@ class ContactManagerView(QMainWindow):
     def showContacts(self):
         contacts = self.model.getAllContacts()
         for contact in contacts:
-            new_label = QtWidgets.QLabel(self.ui.contacts_scrollAreaW)
-            new_label.setText(contact[1] + ' ' + contact[2])
-            new_label.setObjectName(contact[0])
-            self.ui.contacts_layout.addWidget(new_label)
+            new_contact = QtWidgets.QPushButton(self.ui.contacts_scrollAreaW)
+            new_contact.setFlat(True)
+            # new_label.setParent(self.ui.contacts_scrollAreaW)
+            new_contact.setText(contact[1] + ' ' + contact[2])
+            new_contact.setObjectName(contact[0])
+            line = QtWidgets.QFrame(self.ui.contacts_scrollAreaW)
+            line.setFrameShape(QtWidgets.QFrame.HLine)
+            line.setFrameShadow(QtWidgets.QFrame.Sunken)
+            line.setObjectName("line")
+            self.ui.contacts_layout.addWidget(line)
+            self.ui.contacts_layout.addWidget(new_contact)
+            new_contact.clicked.connect(self.clicked)
+
+    def refreshContacts(self):
+        pass
 
     def addRow(self, name, surname):
         """
@@ -43,9 +53,24 @@ class ContactManagerView(QMainWindow):
         :param surname:
         :return:
         """
-        label_2 = QtWidgets.QLabel(self.ui.contacts_scrollAreaW)
-        label_2.setText(name + ' ' + surname)
-        self.ui.contacts_layout.addWidget(label_2)
+        new_contact = QtWidgets.QPushButton(self.ui.contacts_scrollAreaW)
+        new_contact.setFlat(True)
+        new_contact.setText(name + ' ' + surname)
+
+        line = QtWidgets.QFrame(self.ui.contacts_scrollAreaW)
+        line.setFrameShape(QtWidgets.QFrame.HLine)
+        line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        line.setObjectName("line")
+        self.ui.contacts_layout.addWidget(line)
+        self.ui.contacts_layout.addWidget(new_contact)
+        new_contact.clicked.connect(self.clicked)
+
+    def sortBy(self, field, mode):
+        # field to sort by
+        pass
+
+    def clicked(self):
+        print('clicked')
 
     def createNewContact(self):
         """

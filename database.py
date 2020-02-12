@@ -50,11 +50,15 @@ class Database:
 
     def deleteContactTable(self, table_name):
         # TODO fix -> non funziona!
-        self.connection.execute("DROP TABLE IF EXISTS :table_", {'table_': table_name})
+        self.connection.execute("DROP TABLE IF EXISTS :tab", {'tab': table_name})
         self.connection.commit()
 
     def addContact(self, contact):
-        new_id = self.connection.execute("SELECT max(id) FROM contacts") + 1
+        if self.connection.execute("SELECT count(*) FROM contacts").fetchone()[0] != 0:
+            new_id = int((self.connection.execute("SELECT max(id) FROM contacts").fetchone()[0])) + 1
+        else:
+            new_id = 0
+        print('new_id', new_id)
         self.connection.execute("INSERT INTO contacts VALUES (:id, :name ,:surname, :phone, :email, :notes)",
                                 {
                                     'id': new_id,
@@ -70,21 +74,27 @@ class Database:
         self.connection.execute("DELETE FROM contacts WHERE id=:id", {'id': contact_id})
         self.connection.commit()
 
-    def getAllContacts(self):
-        # return a list of contacts with all fields
-        all_contacts = self.connection.execute("SELECT * FROM contacts")
+    def getAllContacts(self, field_to_sort='name', mode='ASC'):
+        # return a list of contacts with all fields (ordered by name mode ASC or DESC)
+        query = 'SELECT * FROM contacts ORDER BY ' + field_to_sort + ' ' + mode
+        all_contacts = self.connection.execute(query)
         return all_contacts
 
     def searchWord(self, word):
         # TODO fix
         self.connection.execute("CREATE VIRTUAL TABLE IF NOT EXISTS complete USING fts5(id,name,surname,phone,email,notes)")
-        # match = self.connection.execute("SELECT * FROM complete WHERE complete = :word", {'word': word})
-        match = self.connection.execute("SELECT count(*), * FROM complete")
+        query = "SELECT * FROM complete WHERE complete = " + word
+        match = self.connection.execute(query)
+        # match = self.connection.execute("SELECT count(*), * FROM complete")
         print([el for el in match])
 
 
 # DB = Database()
+# # DB.connection.execute("ATTACH contacts.db AS my_db")
+# # tab = DB.connection.execute("SELECT name FROM contacts.db.sqlite_master WHERE type='table'")
+# # print(tab)
 # DB.createTable()
+# DB.deleteContactTable('contacts')
 # DB.searchWord('1')
 # print([el for el in DB.getAllContacts()])
 # contact1 = ContactModel('franci1', 'dellu', 43564, 'dsad@dss', 'dwdwds')
