@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication
+import PyQt5.QtCore
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog
 from ui.mainWindow_ui import Ui_MainWindow
 from ui.formDialog_ui import Ui_new_contact_form
 from contactsModel import ContactsModel, ContactModel
@@ -14,35 +15,54 @@ See https://www.tutorialspoint.com/pyqt/pyqt_qstackedwidget.htm for QStackedWidg
 """
 
 
+class NewContactView(QDialog):
+    def __init__(self, model):
+        super(NewContactView, self).__init__()
+        self.ui = Ui_new_contact_form()
+        self.ui.setupUi(self)
+        self.model = model
+
+        self.ui.buttonBox.accepted.connect(lambda: self.model.addContact(ContactModel(
+            self.ui.name_lineEdit.text(), self.ui.surname_lineEdit.text(),
+            self.ui.phone_lineEdit.text(), self.ui.email_lineEdit.text(),
+            self.ui.notes_textEdit.toPlainText())))
+        #
+        # self.ui.buttonBox.accepted.connect(
+        #     lambda: self.save(self.ui.name_lineEdit.text(), self.ui.surname_lineEdit.text()))
+
+
 class ContactManagerView(QMainWindow):
-    def __init__(self):
+    def __init__(self, model):
         super(ContactManagerView, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         # db of contacts
-        self.model = ContactsModel()
+        self.model = model
         self.showContacts()
 
         # connect buttons to slots
-        self.ui.newContact_pb.clicked.connect(self.createNewContact)
+        # self.ui.newContact_pb.clicked.connect(self.createNewContact)
         self.ui.sort_combobox.currentIndexChanged.connect(self.sortBy)
+
+        self.model.contact_added.connect(self.refreshContacts)
 
     def showContacts(self, contacts_=None):
         contacts = (contacts_ if contacts_ is not None else self.model.getAllContacts())
-        for contact in contacts:
+        for id, contact in enumerate(contacts):
             new_contact = QtWidgets.QPushButton(self.ui.contacts_scrollAreaW)
             new_contact.setFlat(True)
             # new_label.setParent(self.ui.contacts_scrollAreaW)
             new_contact.setText(contact[1] + ' ' + contact[2])
             new_contact.setObjectName(contact[0])
-            line = QtWidgets.QFrame(self.ui.contacts_scrollAreaW)
-            line.setFrameShape(QtWidgets.QFrame.HLine)
-            line.setFrameShadow(QtWidgets.QFrame.Sunken)
-            line.setObjectName("line")
-            self.ui.contacts_layout.addWidget(line)
+            if id != 0:
+                line = QtWidgets.QFrame(self.ui.contacts_scrollAreaW)
+                line.setFrameShape(QtWidgets.QFrame.HLine)
+                line.setFrameShadow(QtWidgets.QFrame.Sunken)
+                line.setObjectName("line")
+                self.ui.contacts_layout.addWidget(line)
             self.ui.contacts_layout.addWidget(new_contact)
-            new_contact.clicked.connect(self.clicked)
+            # new_contact.clicked.connect(self.clicked)
 
     def refreshContacts(self, contacts=None):
         for i in reversed(range(self.ui.contacts_layout.count())):
@@ -83,32 +103,32 @@ class ContactManagerView(QMainWindow):
     def clicked(self):
         print('clicked')
 
-    def createNewContact(self):
-        """
-        Open form dialog to create new contact
-        :return:
-        """
-        self.dialog = QtWidgets.QDialog()
-        self.dialog.ui = Ui_new_contact_form()
-        self.dialog.ui.setupUi(self.dialog)
-        # self.ui.mainWindow.close()
-        # in mainWindow.py file:         self.mainWindow = MainWindow
-        self.dialog.show()
-
-        # name = self.dialog.ui.name_lineEdit.text()
-        # surname = self.dialog.ui.surname_lineEdit.text()
-        # phone = self.dialog.ui.phone_lineEdit.text()
-        # email = self.dialog.ui.email_lineEdit.text()
-        # notes = self.dialog.ui.notes_textEdit.toPlainText()
-
-        # new_contact = ContactModel(name, surname, phone, email, notes)
-        # TODO: error if name not given
-        self.dialog.ui.buttonBox.accepted.connect(lambda: self.model.addContact(ContactModel(
-            self.dialog.ui.name_lineEdit.text(), self.dialog.ui.surname_lineEdit.text(),
-            self.dialog.ui.phone_lineEdit.text(), self.dialog.ui.email_lineEdit.text(),
-            self.dialog.ui.notes_textEdit.toPlainText())))
-
-        self.dialog.ui.buttonBox.accepted.connect(lambda: self.save(self.dialog.ui.name_lineEdit.text(), self.dialog.ui.surname_lineEdit.text()))
+    # def createNewContact(self):
+    #     """
+    #     Open form dialog to create new contact
+    #     :return:
+    #     """
+    #     self.dialog = QtWidgets.QDialog()
+    #     self.dialog.ui = Ui_new_contact_form()
+    #     self.dialog.ui.setupUi(self.dialog)
+    #     # self.ui.mainWindow.close()
+    #     # in mainWindow.py file:         self.mainWindow = MainWindow
+    #     self.dialog.show()
+    #
+    #     # name = self.dialog.ui.name_lineEdit.text()
+    #     # surname = self.dialog.ui.surname_lineEdit.text()
+    #     # phone = self.dialog.ui.phone_lineEdit.text()
+    #     # email = self.dialog.ui.email_lineEdit.text()
+    #     # notes = self.dialog.ui.notes_textEdit.toPlainText()
+    #
+    #     # new_contact = ContactModel(name, surname, phone, email, notes)
+    #     # TODO: error if name not given
+    #     self.dialog.ui.buttonBox.accepted.connect(lambda: self.model.addContact(ContactModel(
+    #         self.dialog.ui.name_lineEdit.text(), self.dialog.ui.surname_lineEdit.text(),
+    #         self.dialog.ui.phone_lineEdit.text(), self.dialog.ui.email_lineEdit.text(),
+    #         self.dialog.ui.notes_textEdit.toPlainText())))
+    #
+    #     self.dialog.ui.buttonBox.accepted.connect(lambda: self.save(self.dialog.ui.name_lineEdit.text(), self.dialog.ui.surname_lineEdit.text()))
 
     def save(self, name, surname):
         """
