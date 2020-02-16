@@ -110,6 +110,12 @@ class Database:
         contact = self.connection.execute(query).fetchone()
         return contact is not None
 
+    def removeContact(self, contact_id):
+        # remove contact from contacts db
+        query = "DELETE FROM contacts WHERE id=" + str(contact_id)
+        self.connection.execute(query)
+        self.connection.commit()
+
     def searchWord(self, word):
         # TODO fix
         self.connection.execute("CREATE VIRTUAL TABLE IF NOT EXISTS complete USING fts5(id,name,surname,phone,email,notes)")

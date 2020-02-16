@@ -28,6 +28,7 @@ class ContactModel:
 
 class ContactsListModel(QObject):
     contact_added = pyqtSignal()
+    contact_removed = pyqtSignal()
 
     def __init__(self):
         super(ContactsListModel, self).__init__()
@@ -56,7 +57,6 @@ class ContactsListModel(QObject):
         else:
             self.updateContact( id, name, surname, phone, email, notes)
 
-
     def getAllContacts(self, field_to_sort='name', mode='ASC'):
         # get all contacts in the contact db
         return self.contacts_db.getAllContacts(field_to_sort, mode)
@@ -65,6 +65,9 @@ class ContactsListModel(QObject):
         # get id, name, surname, phone, email and notes
         return self.contacts_db.getContactInfo(contact_id)
 
+    def deleteContact(self, contact_id):
+        self.contacts_db.removeContact(contact_id)
+        self.contact_removed.emit()
 
 # class ContactsModel(QObject):
 #     contact_added = pyqtSignal()

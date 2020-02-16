@@ -18,6 +18,7 @@ class StackedWindow(QWidget):
                         'detailContact': 2}
 
         current_contact = None
+        self.contacts_model = model
 
         # set window icon
         icon = QtGui.QIcon()
@@ -47,7 +48,7 @@ class StackedWindow(QWidget):
         self.new_contacts_window.ui.buttonBox.rejected.connect(lambda: self.display(self.windows['allContacts']))
         self.details_contact.ui.back_pb.clicked.connect(lambda: self.display(self.windows['allContacts']))
 
-        self.details_contact.ui.edit_pb.clicked.connect(lambda: self.display(self.windows['newContact'], self.details_contact.contact))
+        self.details_contact.ui.edit_pb.clicked.connect(lambda: self.display(self.windows['newContact'], self.details_contact.contact_id))
         self.details_contact.ui.back_pb.clicked.connect(lambda: self.display(self.windows['allContacts']))
 
         # self.all_contacts_window.contact_clicked.connect(self.details_contact.setContact)
@@ -58,6 +59,9 @@ class StackedWindow(QWidget):
         self.all_contacts_window.contact_clicked.connect(self.details_contact.setContact)
         # self.details_contact.ui.edit_pb.clicked.connect(self)
 
+        self.contacts_model.contact_removed.connect(lambda: self.display(self.windows['allContacts']))
+        self.contacts_model.contact_removed.connect(self.all_contacts_window.refreshContacts)
+        self.contacts_model.contact_removed.connect(self.details_contact.clearLines)
         # signal emitted when window changes
         self.Stack.currentChanged.connect(self.onCurrentChanged)
 
