@@ -1,0 +1,91 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'ui/contactDetails.ui'
+#
+# Created by: PyQt5 UI code generator 5.9.2
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_Dialog(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(493, 597)
+        self.gridLayout = QtWidgets.QGridLayout(Dialog)
+        self.gridLayout.setObjectName("gridLayout")
+        self.line = QtWidgets.QFrame(Dialog)
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.gridLayout.addWidget(self.line, 1, 0, 1, 1)
+        self.contact_info_layout = QtWidgets.QVBoxLayout()
+        self.contact_info_layout.setObjectName("contact_info_layout")
+        self.phone_label = QtWidgets.QLabel(Dialog)
+        self.phone_label.setObjectName("phone_label")
+        self.contact_info_layout.addWidget(self.phone_label)
+        self.email_label = QtWidgets.QLabel(Dialog)
+        self.email_label.setObjectName("email_label")
+        self.contact_info_layout.addWidget(self.email_label)
+        self.gridLayout.addLayout(self.contact_info_layout, 2, 0, 1, 1)
+        self.horizontalWidget = QtWidgets.QWidget(Dialog)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.horizontalWidget.sizePolicy().hasHeightForWidth())
+        self.horizontalWidget.setSizePolicy(sizePolicy)
+        self.horizontalWidget.setMaximumSize(QtCore.QSize(16777215, 45))
+        self.horizontalWidget.setObjectName("horizontalWidget")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.horizontalWidget)
+        self.gridLayout_2.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.back_pb = QtWidgets.QToolButton(self.horizontalWidget)
+        icon = QtGui.QIcon.fromTheme("back")
+        self.back_pb.setIcon(icon)
+        self.back_pb.setAutoRaise(False)
+        self.back_pb.setObjectName("back_pb")
+        self.gridLayout_2.addWidget(self.back_pb, 0, 1, 1, 1)
+        self.back_pb_ = QtWidgets.QPushButton(self.horizontalWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.back_pb_.sizePolicy().hasHeightForWidth())
+        self.back_pb_.setSizePolicy(sizePolicy)
+        self.back_pb_.setMaximumSize(QtCore.QSize(35, 16777215))
+        self.back_pb_.setObjectName("back_pb_")
+        self.gridLayout_2.addWidget(self.back_pb_, 0, 0, 1, 1)
+        self.contact_label = QtWidgets.QLabel(self.horizontalWidget)
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        font.setStrikeOut(False)
+        font.setKerning(True)
+        self.contact_label.setFont(font)
+        self.contact_label.setAutoFillBackground(False)
+        self.contact_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.contact_label.setObjectName("contact_label")
+        self.gridLayout_2.addWidget(self.contact_label, 0, 2, 1, 1)
+        self.gridLayout.addWidget(self.horizontalWidget, 0, 0, 1, 1)
+        self.delete_pb = QtWidgets.QPushButton(Dialog)
+        self.delete_pb.setObjectName("delete_pb")
+        self.gridLayout.addWidget(self.delete_pb, 4, 0, 1, 1, QtCore.Qt.AlignRight)
+        self.edit_pb = QtWidgets.QPushButton(Dialog)
+        self.edit_pb.setObjectName("edit_pb")
+        self.gridLayout.addWidget(self.edit_pb, 3, 0, 1, 1, QtCore.Qt.AlignRight)
+
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.phone_label.setText(_translate("Dialog", "name"))
+        self.email_label.setText(_translate("Dialog", "TextLabel"))
+        self.back_pb.setText(_translate("Dialog", "..."))
+        self.back_pb_.setText(_translate("Dialog", "Back"))
+        self.contact_label.setText(_translate("Dialog", "name surname"))
+        self.delete_pb.setText(_translate("Dialog", "Delete"))
+        self.edit_pb.setText(_translate("Dialog", "Edit"))
+

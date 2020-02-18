@@ -24,21 +24,18 @@ import uuid
 # conn.close()
 
 
-class Database:
+class ContactsDb:
     def __init__(self):
         self.connection = sqlite3.connect("contacts.db")
-        self.createTable()
-        # self.createTable()
-        # cur = self.connection.cursor()
-        # cur.execute('pragma compile_options;')
-        # available_pragmas = cur.fetchall()
-        # if ('ENABLE_FTS5',) in available_pragmas:
-        #     print('ENABLE_FTS5 YES')
-        # else:
-        #     print('ENABLE_FTS5 NO')
+        self.createContactsTable()
+        self.createTagTable()
 
-    def createTable(self):
-        # create a new table in db if it doesn't exist yet
+    """
+    CONTACTS TABLE
+    """
+
+    def createContactsTable(self):
+        # create a new contacts table in db if it doesn't exist yet
         self.connection.execute("""CREATE TABLE IF NOT EXISTS contacts(
             id integer,
             name text,
@@ -55,7 +52,7 @@ class Database:
         self.connection.commit()
 
     def generateNewContactId(self):
-        # generate new contact id as max + 1 of id in db
+        # generate new contact id as (max + 1) of id in db
         if self.connection.execute("SELECT count(*) FROM contacts").fetchone()[0] != 0:
             new_id = int((self.connection.execute("SELECT max(id) FROM contacts").fetchone()[0])) + 1
         else:
@@ -82,20 +79,20 @@ class Database:
     def getAllContacts(self, field_to_sort='name', mode='ASC'):
         # return a list of contacts with all fields (ordered by name mode ASC or DESC)
         field_2 = ('surname' if field_to_sort == 'name' else 'name')
-        query = 'SELECT * FROM contacts ORDER BY ' + field_to_sort + ' COLLATE NOCASE ' + mode + ' , ' + field_2
-        all_contacts = self.connection.execute(query)
+        query = "SELECT * FROM contacts ORDER BY " + field_to_sort + " COLLATE NOCASE " + mode + " , " + field_2
+        all_contacts = [c for c in self.connection.execute(query).fetchall()]
         return all_contacts
 
     def getContactInfo(self, contact_id):
         query = 'SELECT id, name, surname,phone,email, notes FROM contacts WHERE id =' + str(contact_id)
         contact_details = self.connection.execute(query).fetchone()
-        print('contact_details:  ', contact_details)
+        # print('contact_details:  ', contact_details)
         return contact_details
 
     def updateContact(self, contact_id, name, surname, phone, email, notes):
         # update info for the contact specified in the contact_id
         # contact is ContactModel obj
-        print('updateContact: ', name, ' ', surname)
+        # print('updateContact: ', name, ' ', surname)
         query = "UPDATE contacts SET name=" + str("'") + name + str("'") + ", surname=" + str("'") + surname + str("'") + \
                 ', phone =' + str("'") + str(phone) + str("'") + ', email=' + str("'") + email + str("'") + ', notes=' + str("'") + notes + str("'") + ' WHERE id = ' + str(contact_id)
         self.connection.execute(query)
@@ -106,7 +103,7 @@ class Database:
         if contact_id is None:
             return False
         query = 'SELECT name from contacts Where id =' + str(contact_id)
-        print('is contact in db: ', contact_id, ' ', query)
+        # print('is contact in db: ', contact_id, ' ', query)
         contact = self.connection.execute(query).fetchone()
         return contact is not None
 
@@ -117,15 +114,30 @@ class Database:
         self.connection.commit()
 
     def searchWord(self, word):
-        # TODO fix
-        self.connection.execute("CREATE VIRTUAL TABLE IF NOT EXISTS complete USING fts5(id,name,surname,phone,email,notes)")
-        query = "SELECT * FROM complete WHERE complete = " + word
-        match = self.connection.execute(query)
-        # match = self.connection.execute("SELECT count(*), * FROM complete")
-        print([el for el in match])
+        # # TODO fix
+        # self.connection.execute("CREATE VIRTUAL TABLE IF NOT EXISTS complete USING fts5(id,name,surname,phone,email,notes)")
+        # query = "SELECT * FROM complete WHERE complete = " + word
+        # match = self.connection.execute(query)
+        # # match = self.connection.execute("SELECT count(*), * FROM complete")
+        # # print([el for el in match])
+        query = "SELECT id FROM contacts WHERE name LIKE " + str("'%") + word + str("%' or surname LIKE ") + str("'%") + word + str("%' or phone LIKE ") + str("'%") + word + str("%' or email LIKE ") + str("'%") + word + str("%' or notes LIKE ") + str("'%") + word + str("%'")
+
+        # list of ids of contacts in which the term is present
+        ww = [el[0] for el in self.connection.execute(query).fetchall()]
+        return ww
+    """
+    TAGS TABLE
+    """
+
+    def createTagTable(self):
+        # create a new tags table in db if it doesn't exist yet
+        self.connection.execute("CREATE TABLE IF NOT EXISTS TAGS(TAG TEXT)")
+        self.connection.commit()
 
 
-# DB = Database()
+# db = ContactsDb()
+# print(db.searchWord('Gi'))
+
 # # DB.connection.execute("ATTACH contacts.db AS my_db")
 # # tab = DB.connection.execute("SELECT name FROM contacts.db.sqlite_master WHERE type='table'")
 # # print(tab)
@@ -137,4 +149,3 @@ class Database:
 # contact1 = ContactModel('franci1', 'dellu', 43564, 'dsad@dss', 'dwdwds')
 # DB.addContact(contact1)
 # DB.deleteContact(0)
-

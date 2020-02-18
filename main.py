@@ -44,7 +44,7 @@ class StackedWindow(QWidget):
         self.all_contacts_window.ui.newContact_pb.clicked.connect(lambda: self.display(self.windows['newContact']))
 
         self.new_contacts_window.ui.buttonBox.accepted.connect(lambda: self.display(self.windows['allContacts'])) #, self.new_contacts_window.contact
-        self.new_contacts_window.ui.buttonBox.accepted.connect(self.all_contacts_window.refreshContacts)
+        self.new_contacts_window.ui.buttonBox.accepted.connect(self.all_contacts_window.showContacts)
         self.new_contacts_window.ui.buttonBox.rejected.connect(lambda: self.display(self.windows['allContacts']))
         self.details_contact.ui.back_pb.clicked.connect(lambda: self.display(self.windows['allContacts']))
 
@@ -60,7 +60,7 @@ class StackedWindow(QWidget):
         # self.details_contact.ui.edit_pb.clicked.connect(self)
 
         self.contacts_model.contact_removed.connect(lambda: self.display(self.windows['allContacts']))
-        self.contacts_model.contact_removed.connect(self.all_contacts_window.refreshContacts)
+        # self.contacts_model.contact_removed.connect(self.all_contacts_window.refreshContacts)
         self.contacts_model.contact_removed.connect(self.details_contact.clearLines)
         # signal emitted when window changes
         self.Stack.currentChanged.connect(self.onCurrentChanged)

@@ -1,5 +1,5 @@
 from PyQt5.QtCore import pyqtSignal, QObject
-from database import Database
+from contactsdb import ContactsDb
 
 
 class ContactModel:
@@ -32,7 +32,7 @@ class ContactsListModel(QObject):
 
     def __init__(self):
         super(ContactsListModel, self).__init__()
-        self.contacts_db = Database()
+        self.contacts_db = ContactsDb()
 
     def saveNewContact(self, name, surname, phone, email, notes):
         # generate id for new contact and add new contact to contacts_db
@@ -55,7 +55,7 @@ class ContactsListModel(QObject):
         if id is None:
             self.saveNewContact(name, surname, phone, email, notes)
         else:
-            self.updateContact( id, name, surname, phone, email, notes)
+            self.updateContact(id, name, surname, phone, email, notes)
 
     def getAllContacts(self, field_to_sort='name', mode='ASC'):
         # get all contacts in the contact db
@@ -68,6 +68,10 @@ class ContactsListModel(QObject):
     def deleteContact(self, contact_id):
         self.contacts_db.removeContact(contact_id)
         self.contact_removed.emit()
+
+    def searchTerm(self, term):
+        # list of contacts where term is present
+        return self.contacts_db.searchWord(term)
 
 # class ContactsModel(QObject):
 #     contact_added = pyqtSignal()

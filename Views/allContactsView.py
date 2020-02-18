@@ -1,3 +1,5 @@
+from typing import Dict
+
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
@@ -12,18 +14,45 @@ class AllContactsView(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.sort_fields = {'name': 0,
+                            'surname': 1}
+
         # db of contacts
         self.model = model
         self.showContacts()
 
         # connect buttons to slots
-        # self.ui.newContact_pb.clicked.connect(self.createNewContact)
-        self.ui.sort_combobox.currentIndexChanged.connect(self.sortBy)
+        self.ui.sort_combobox.currentIndexChanged.connect(self.showContacts)
+        self.ui.search_pb.clicked.connect(self.showContacts)
 
-        self.model.contact_added.connect(self.refreshContacts)
+        # enter button clicked on search line -> search term on line edit
+        self.ui.search_line_edit.editingFinished.connect(self.showContacts)
+
+        # refresh contacts list if a contact is added or removed
+        self.model.contact_added.connect(self.showContacts)
+        self.model.contact_removed.connect(self.showContacts)
 
     def showContacts(self, contacts_=None):
-        contacts = (contacts_ if contacts_ is not None else self.model.getAllContacts())
+        # clear contacts
+        self.refreshContacts()
+        # TODO check tag field, ordinamento and search
+        # contacts = (contacts_ if contacts_ is not None else self.model.getAllContacts())
+
+        # check order by (name/surname)
+        sort_id = self.ui.sort_combobox.currentIndex()
+
+        sorted_contacts = self.sortBy(list(self.sort_fields.keys())[sort_id])  # list of (id, name, surname) of sorted contacts
+        contacts = [c for c in sorted_contacts]
+
+        # check search bar
+        if self.ui.search_line_edit.text() != '':
+            term = self.ui.search_line_edit.text()
+            contacts_ids = self.model.searchTerm(term)  # list of id of the contacts
+            contacts = [c for c in sorted_contacts if c[0] in contacts_ids]
+
+        # TODO: check tag ...
+
+        # contacts = self.model.getAllContacts()
         for id, contact in enumerate(contacts):
             new_contact = QtWidgets.QPushButton(self.ui.contacts_scrollAreaW)
             new_contact.setFlat(True)
@@ -44,16 +73,15 @@ class AllContactsView(QMainWindow):
             item = self.ui.contacts_layout.itemAt(i).widget()
             item.deleteLater()
             # self.ui.contacts_layout.removeWidget(item)
-        print('removed all contacts', self.ui.contacts_layout.count())
-        self.showContacts(contacts)
+        # print('removed all contacts', self.ui.contacts_layout.count())
+        # self.showContacts(contacts)
 
     def sortBy(self, field, mode='ASC'):
-        # field to sort by
-        # print('sort by', field)
-        field_to_sort = ('name' if field == 0 else 'surname')
-        contacts = self.model.getAllContacts(field_to_sort)
-        self.refreshContacts(contacts)
-        pass
+        # field name to sort by
+        # field_to_sort = ('name' if field == 0 else 'surname')
+        contacts = self.model.getAllContacts(field)
+        # self.refreshContacts(contacts)
+        return contacts
 
     def clicked(self, contact):
         # contact_id = int(contact.objectName())
@@ -63,3 +91,11 @@ class AllContactsView(QMainWindow):
         # contact_info = self.model.getContactInfo(sender_id)
         # send id of the contact
         self.contact_clicked.emit(sender_id)
+
+    def searchTerm(self):
+        # TODO: search more than one word
+        term = self.ui.search_line_edit.text()
+        contacts_ids = self.model.searchTerm(term)
+        # self.showContacts(contacts_ids)
+        print(contacts_ids)
+

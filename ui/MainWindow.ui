@@ -37,7 +37,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
+    <item row="5" column="0">
      <widget class="QScrollArea" name="contacts_scrollArea">
       <property name="widgetResizable">
        <bool>true</bool>
@@ -48,7 +48,7 @@
          <x>0</x>
          <y>0</y>
          <width>463</width>
-         <height>629</height>
+         <height>563</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="contacts_layout">
@@ -104,7 +104,7 @@
       </widget>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item row="7" column="0">
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="topMargin">
        <number>0</number>
@@ -135,22 +135,79 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="0" alignment="Qt::AlignRight">
-     <widget class="QComboBox" name="sort_combobox">
-      <property name="currentText">
-       <string>Sort by: name</string>
-      </property>
-      <item>
-       <property name="text">
-        <string>Sort by: name</string>
-       </property>
+    <item row="4" column="0">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="1" alignment="Qt::AlignRight">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Sort by:</string>
+        </property>
+       </widget>
       </item>
-      <item>
-       <property name="text">
-        <string>Sort by: surname</string>
-       </property>
+      <item row="4" column="1" alignment="Qt::AlignLeft">
+       <widget class="QComboBox" name="tags_combo_box">
+        <item>
+         <property name="text">
+          <string/>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>tag1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>tag2</string>
+         </property>
+        </item>
+       </widget>
       </item>
-     </widget>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="search_line_edit">
+        <property name="placeholderText">
+         <string>Search...</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QComboBox" name="sort_combobox">
+        <property name="currentText">
+         <string>Name</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Surname</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="4" column="0" alignment="Qt::AlignRight">
+       <widget class="QLabel" name="tags_filter_label">
+        <property name="text">
+         <string>Filter  tag:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QToolButton" name="search_pb">
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset theme="search"/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

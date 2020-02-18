@@ -1,6 +1,10 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QMessageBox
+import os
+
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QDialog, QMessageBox, QLabel
 from ui.contactDetails_ui import Ui_Dialog
+
 
 
 class ContactDetails(QDialog):
@@ -19,6 +23,7 @@ class ContactDetails(QDialog):
         # delete contact behavior
         self.ui.delete_pb.clicked.connect(self.deleteContact)
 
+
     def deleteContact(self):
         buttonReply = QMessageBox.question(self, 'Remove contact', "Are you sure you want to delete " + self.ui.contact_label.text() + "?",
                                            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -31,8 +36,31 @@ class ContactDetails(QDialog):
         contact_details = list(self.model.getContactInfofromId(contact_id))[1:]
         self.ui.contact_label.setText(contact_details[0] + ' ' + contact_details[1])
         for detail in contact_details:
+            # TODO: fix too much distance between fields and insert icons
             if detail != '':
                 self.ui.contact_info_layout.addWidget(QtWidgets.QLabel((str(detail) if detail is not None else ' ')))
+
+            # if detail != '':
+                # layout = QtWidgets.QHBoxLayout()
+                # field_icon = QtWidgets.QLabel()
+                # pixmap = QPixmap('img/phoneIcon2.png')
+                # field_icon.setPixmap(pixmap.scaledToWidth(30))
+                # # self.resize(pixmap.width(), pixmap.height())
+                # layout.addWidget(field_icon)
+                # layout.addWidget(QtWidgets.QLabel((str(detail) if detail is not None else ' ')))
+                # self.ui.contact_info_layout.addWidget(QtWidgets.QLabel((str(detail) if detail is not None else ' ')))
+                # self.ui.contact_info_layout.addWidget(layout.widget())
+
+                # self.horiz = QtWidgets.QHBoxLayout(self)
+                # self.img_label = QLabel()
+                # self.img_label.setScaledContents(True)
+                # pixmap = QPixmap(os.path.join('img', 'phoneIcon2.png'))
+                # self.img_label.setPixmap(pixmap)
+                # self.img_label.setFixedSize(150, 150)
+                # self.horiz.addWidget(self.img_label)
+                # self.horiz.addWidget(QtWidgets.QLabel(str(detail)))
+                # self.ui.contact_info_layout.addWidget(self.horiz.widget())
+
 
     def clearLines(self):
         self.ui.contact_label.clear()
