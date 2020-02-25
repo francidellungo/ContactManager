@@ -1,10 +1,9 @@
 import os
-
+from PyQt5 import Qt, QtCore
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QDialog, QMessageBox, QLabel
+from PyQt5.QtWidgets import QDialog, QMessageBox, QCheckBox
 from ui.contactDetails_ui import Ui_Dialog
-
 
 
 class ContactDetails(QDialog):
@@ -23,7 +22,6 @@ class ContactDetails(QDialog):
         # delete contact behavior
         self.ui.delete_pb.clicked.connect(self.deleteContact)
 
-
     def deleteContact(self):
         buttonReply = QMessageBox.question(self, 'Remove contact', "Are you sure you want to delete " + self.ui.contact_label.text() + "?",
                                            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -39,6 +37,18 @@ class ContactDetails(QDialog):
             # TODO: fix too much distance between fields and insert icons
             if detail != '':
                 self.ui.contact_info_layout.addWidget(QtWidgets.QLabel((str(detail) if detail is not None else ' ')))
+        all_tags = self.model.getAllTags()
+        contact_tags = self.model.getContactTags(contact_id)
+        for tag in all_tags:
+            tag_w = QCheckBox()
+            tag_w.setObjectName(tag)
+            tag_w.setText(tag)
+            if tag in contact_tags:
+                tag_w.setChecked(True)
+            tag_w.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+
+            # add tag to tag layout
+            self.ui.tags_layout.addWidget(tag_w)
 
             # if detail != '':
                 # layout = QtWidgets.QHBoxLayout()
@@ -61,12 +71,13 @@ class ContactDetails(QDialog):
                 # self.horiz.addWidget(QtWidgets.QLabel(str(detail)))
                 # self.ui.contact_info_layout.addWidget(self.horiz.widget())
 
-
     def clearLines(self):
         self.ui.contact_label.clear()
         for i in reversed(range(self.ui.contact_info_layout.count())):
             item = self.ui.contact_info_layout.itemAt(i).widget()
             item.deleteLater()
+        for i in range(self.ui.tags_layout.count()):
+            self.ui.tags_layout.itemAt(i).widget().deleteLater()
 
     def setContact(self, contact_id):
         self.contact_id = contact_id

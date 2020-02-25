@@ -9,7 +9,7 @@ from ui.mainWindow_ui import Ui_MainWindow
 class AllContactsView(QMainWindow):
     contact_clicked = pyqtSignal(int)
 
-    def __init__(self, model):
+    def __init__(self, model, t_model):
         super(AllContactsView, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -19,7 +19,11 @@ class AllContactsView(QMainWindow):
 
         # db of contacts
         self.model = model
+        self.tags_model = t_model
         self.showContacts()
+
+        # set tags
+        self.ui.tags_combo_box.addItems(self.tags_model.getAllTags())
 
         # connect buttons to slots
         self.ui.sort_combobox.currentIndexChanged.connect(self.showContacts)
@@ -28,9 +32,14 @@ class AllContactsView(QMainWindow):
         # enter button clicked on search line -> search term on line edit
         self.ui.search_line_edit.editingFinished.connect(self.showContacts)
 
+        # changed tag entry
+        self.ui.tags_combo_box.currentIndexChanged.connect(self.showContacts)
+
         # refresh contacts list if a contact is added or removed
+        # TODO:
         self.model.contact_added.connect(self.showContacts)
         self.model.contact_removed.connect(self.showContacts)
+        self.model.contact_updated.connect(self.showContacts)
 
     def showContacts(self, contacts_=None):
         # clear contacts
@@ -47,10 +56,13 @@ class AllContactsView(QMainWindow):
         # check search bar
         if self.ui.search_line_edit.text() != '':
             term = self.ui.search_line_edit.text()
-            contacts_ids = self.model.searchTerm(term)  # list of id of the contacts
-            contacts = [c for c in sorted_contacts if c[0] in contacts_ids]
+            contacts_ids_s = self.model.searchTerm(term)  # list of id of the contacts
+            contacts = [c for c in contacts if c[0] in contacts_ids_s]
 
         # TODO: check tag ...
+        if self.ui.tags_combo_box.currentText() != '':
+            contacts_ids_t = self.model.getContactsFromTag(self.ui.tags_combo_box.currentText())
+            contacts = [c for c in contacts if c[0] in contacts_ids_t]
 
         # contacts = self.model.getAllContacts()
         for id, contact in enumerate(contacts):
@@ -66,7 +78,7 @@ class AllContactsView(QMainWindow):
                 line.setObjectName("line")
                 self.ui.contacts_layout.addWidget(line)
             self.ui.contacts_layout.addWidget(new_contact)
-            new_contact.clicked.connect(lambda: self.clicked(new_contact))
+            new_contact.clicked.connect(self.clicked)
 
     def refreshContacts(self, contacts=None):
         for i in reversed(range(self.ui.contacts_layout.count())):
@@ -83,12 +95,9 @@ class AllContactsView(QMainWindow):
         # self.refreshContacts(contacts)
         return contacts
 
-    def clicked(self, contact):
-        # contact_id = int(contact.objectName())
+    def clicked(self):
         sender_id = int(self.sender().objectName())
         print('contact clicked, sender_id: ', sender_id)
-        # print('sender_id', contact_id, ' ', sender_id, ' ', type(sender_id))
-        # contact_info = self.model.getContactInfo(sender_id)
         # send id of the contact
         self.contact_clicked.emit(sender_id)
 

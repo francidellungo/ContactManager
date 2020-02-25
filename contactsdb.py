@@ -28,7 +28,9 @@ class ContactsDb:
     def __init__(self):
         self.connection = sqlite3.connect("contacts.db")
         self.createContactsTable()
-        self.createTagTable()
+        tags = ['sport', 'university', 'work', 'cinema']
+        self.createTagTable(tags)
+        self.createContactsTagTable()
 
     """
     CONTACTS TABLE
@@ -46,7 +48,7 @@ class ContactsDb:
             )""")
         self.connection.commit()
 
-    def deleteContactTable(self, table_name):
+    def deleteTable(self, table_name):
         query = "DROP TABLE IF EXISTS " + table_name
         self.connection.execute(query)
         self.connection.commit()
@@ -125,17 +127,84 @@ class ContactsDb:
         # list of ids of contacts in which the term is present
         ww = [el[0] for el in self.connection.execute(query).fetchall()]
         return ww
+
     """
     TAGS TABLE
     """
 
-    def createTagTable(self):
-        # create a new tags table in db if it doesn't exist yet
-        self.connection.execute("CREATE TABLE IF NOT EXISTS TAGS(TAG TEXT)")
+    def createTagTable(self, tag_list):
+        # create a new tags table in db if it doesn't exist yet (tag_list starting list of tags)
+        self.connection.execute("CREATE TABLE IF NOT EXISTS tags(tag text)")
         self.connection.commit()
+        for tag in tag_list:
+            self.addTag(tag)
+
+    def addTag(self, tag_name: str) -> bool:
+        # add tag to tags table if not already present
+        tags = self.getAllTags()
+        if tag_name not in tags:
+            query = "INSERT INTO tags VALUES (" + str("'") + tag_name + str("'") + ")"
+            self.connection.execute(query)
+            self.connection.commit()
+            return True
+        return False
+
+    def getAllTags(self):
+        # get list of tags in tags table
+        return [tag[0] for tag in self.connection.execute("SELECT * FROM tags").fetchall()]
+
+    """
+    CONTACTS - TAGS TABLE
+    """
+
+    def createContactsTagTable(self):
+        self.connection.execute("CREATE TABLE IF NOT EXISTS contacts_tags(contact_id text, tag text )")
+        self.connection.commit()
+
+    def setContactTags(self, contact_id, tags):
+        # tags is a list of tags
+        for tag in tags:
+            self.setContactTag(contact_id, tag)
+
+    def setContactTag(self, contact_id, tag):
+        # set tag for a contact
+        query = "INSERT INTO contacts_tags VALUES (" + contact_id + ", " + str("'") + tag + str("')")  # (12, 'school')"
+        self.connection.execute(query)
+        self.connection.commit()
+
+    def getContactTags(self, contact_id):
+        assert type(contact_id) == str
+        return [tag[0] for tag in self.connection.execute("SELECT tag FROM contacts_tags WHERE contact_id = '" + contact_id + "' ").fetchall()]
+
+    def removeContactTag(self, contact_id, tag=None):
+        if tag is not None:
+            # delete specific entry in contacts_tags table
+            self.connection.execute("DELETE FROM contacts_tags WHERE contact_id='" + str(contact_id) + "' and tag='" + tag + "'")
+            self.connection.commit()
+        else:
+            # delete all entries in contacst_tags  table where id == contact_id
+            self.connection.execute("DELETE FROM contacts_tags WHERE contact_id='" + str(contact_id) + "'")
+            self.connection.commit()
+
+    def getAllContactsTags(self):
+        # list of (contact_id, tag) ...
+        return [tag for tag in self.connection.execute("SELECT * FROM contacts_tags").fetchall()]
+
+    def getContactsFromTag(self, tag):
+        # get list of contacts_id for the given tag
+        return [int(c_id[0]) for c_id in self.connection.execute("SELECT contact_id FROM contacts_tags WHERE tag='" + tag + "'")]
+
 
 
 # db = ContactsDb()
+# print(db.getAllContactsTags())
+# db.setContactTag('12', 'sport')
+# db.setContactTag('12', 'uni')
+# print(db.getContactTags('12'))
+# # db.deleteTable('tags')
+# print(db.addTag('Work'))
+# print(db.getAllTags())
+
 # print(db.searchWord('Gi'))
 
 # # DB.connection.execute("ATTACH contacts.db AS my_db")

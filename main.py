@@ -8,17 +8,20 @@ from contactsModel import ContactsListModel
 from Views.newContactView import NewContactView
 from Views.detailContactView import ContactDetails
 from Views.allContactsView import AllContactsView
+from tagModel import TagsModel
 
 
 class StackedWindow(QWidget):
-    def __init__(self, model):
+    def __init__(self, contacts_model, tags_model):  # contacts_tags_model
         super(StackedWindow, self).__init__()
         self.windows = {'allContacts': 0,
                         'newContact': 1,
                         'detailContact': 2}
 
-        current_contact = None
-        self.contacts_model = model
+        # current_contact = None
+        self.contacts_model = contacts_model
+        self.tags_model = tags_model
+        # self.contacts_tags_model = contacts_tags_model
 
         # set window icon
         icon = QtGui.QIcon()
@@ -28,9 +31,9 @@ class StackedWindow(QWidget):
         # create stack with different windows
         self.Stack = QStackedWidget(self)
 
-        self.all_contacts_window = AllContactsView(model)
-        self.new_contacts_window = NewContactView(model)
-        self.details_contact = ContactDetails(model)
+        self.all_contacts_window = AllContactsView(self.contacts_model, self.tags_model)
+        self.new_contacts_window = NewContactView(self.contacts_model)
+        self.details_contact = ContactDetails(self.contacts_model)
 
         # add windows to stack
         self.Stack.addWidget(self.all_contacts_window)
@@ -63,8 +66,6 @@ class StackedWindow(QWidget):
         # self.contacts_model.contact_removed.connect(self.all_contacts_window.refreshContacts)
         self.contacts_model.contact_removed.connect(self.details_contact.clearLines)
         # signal emitted when window changes
-        self.Stack.currentChanged.connect(self.onCurrentChanged)
-
 
         # NEW COMMANDS:::
         # open details of existing contact
@@ -78,17 +79,22 @@ class StackedWindow(QWidget):
         self.setMaximumSize(QtCore.QSize(483, 800))
         self.show()
 
-    def onCurrentChanged(self, i):
-        print('current window: ', i)
-        # if i ==
+    # def onCurrentChanged(self, i):
+    #     print('current window: ', i)
+    #     # if i ==
 
+    def display(self, window_id, contact_id=None):
+        self.Stack.setCurrentIndex(window_id)
+        # TODO: two instances no refresh in all contacts when one is changed (maybe delete contact_added,
+        #  contact_removed and contact_updated and add these rows below (to refresh all contacts window) or
+        #  get notifications from db when it is modified
+        # update list of all contacts
+        # if self.Stack.currentIndex() == self.windows['allContacts']:
+        #     self.Stack.currentWidget().showContacts()
 
-    def display(self, i, contact=None):
-        self.Stack.setCurrentIndex(i)
-        # TODO fix setting contact
-        if contact is not None:
-            self.Stack.currentWidget().setContact(contact)
-        print('display: ', i, contact)
+        if contact_id is not None:
+            self.Stack.currentWidget().setContact(contact_id)
+        print('display: ', window_id, contact_id)
 
 
 # class stackedExample(QWidget):
@@ -159,7 +165,8 @@ class StackedWindow(QWidget):
 def main():
     app = QApplication(sys.argv)
     model = ContactsListModel()
-    ex = StackedWindow(model)
+    tags_m = TagsModel()
+    ex = StackedWindow(model, tags_m)
     sys.exit(app.exec_())
 
 
