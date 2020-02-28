@@ -108,3 +108,17 @@ class AllContactsView(QMainWindow):
         # self.showContacts(contacts_ids)
         print(contacts_ids)
 
+    def refreshTags(self):
+        # refresh tags in comboBox
+        for i in range(self.ui.tags_combo_box.count()):
+            self.ui.tags_combo_box.clear()
+            # self.ui.tags_combo_box.item
+
+        # all_tags = self.tags_model.getAllTags()
+        # for tag in all_tags:
+        #     self.ui.tags_combo_box.addItem(tag)
+        self.ui.tags_combo_box.addItem('')
+        [self.ui.tags_combo_box.addItem(tag) for tag in self.tags_model.getAllTags()]
+
+
+

@@ -48,7 +48,7 @@
          <x>0</x>
          <y>0</y>
          <width>463</width>
-         <height>563</height>
+         <height>597</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="contacts_layout">
@@ -109,7 +109,7 @@
       <property name="topMargin">
        <number>0</number>
       </property>
-      <item row="1" column="0">
+      <item row="0" column="0" alignment="Qt::AlignHCenter">
        <widget class="QPushButton" name="newContact_pb">
         <property name="text">
          <string>New contact</string>
@@ -123,13 +123,6 @@
           <width>16</width>
           <height>16</height>
          </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="delete_pb">
-        <property name="text">
-         <string>Delete contact</string>
         </property>
        </widget>
       </item>
@@ -151,16 +144,6 @@
           <string/>
          </property>
         </item>
-        <item>
-         <property name="text">
-          <string>tag1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>tag2</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item row="3" column="1">
@@ -177,6 +160,9 @@
        <widget class="QComboBox" name="sort_combobox">
         <property name="currentText">
          <string>Name</string>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::InsertAtCurrent</enum>
         </property>
         <item>
          <property name="text">
@@ -203,7 +189,8 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset theme="search"/>
+         <iconset theme="search">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>

@@ -14,6 +14,7 @@ from tagModel import TagsModel
 class StackedWindow(QWidget):
     def __init__(self, contacts_model, tags_model):  # contacts_tags_model
         super(StackedWindow, self).__init__()
+        self.setWindowTitle('Contact Manager')
         self.windows = {'allContacts': 0,
                         'newContact': 1,
                         'detailContact': 2}
@@ -32,7 +33,7 @@ class StackedWindow(QWidget):
         self.Stack = QStackedWidget(self)
 
         self.all_contacts_window = AllContactsView(self.contacts_model, self.tags_model)
-        self.new_contacts_window = NewContactView(self.contacts_model)
+        self.new_contacts_window = NewContactView(self.contacts_model, self.tags_model)
         self.details_contact = ContactDetails(self.contacts_model)
 
         # add windows to stack
@@ -45,6 +46,7 @@ class StackedWindow(QWidget):
 
         # behavior (when change stack item visualized)
         self.all_contacts_window.ui.newContact_pb.clicked.connect(lambda: self.display(self.windows['newContact']))
+        self.all_contacts_window.ui.newContact_pb.clicked.connect(lambda: self.new_contacts_window.setTags())
 
         self.new_contacts_window.ui.buttonBox.accepted.connect(lambda: self.display(self.windows['allContacts'])) #, self.new_contacts_window.contact
         self.new_contacts_window.ui.buttonBox.accepted.connect(self.all_contacts_window.showContacts)
@@ -67,6 +69,9 @@ class StackedWindow(QWidget):
         self.contacts_model.contact_removed.connect(self.details_contact.clearLines)
         # signal emitted when window changes
 
+        # signal for tag_added
+        self.new_contacts_window.tag_added.connect(self.all_contacts_window.refreshTags)
+
         # NEW COMMANDS:::
         # open details of existing contact
         # self.all_contacts_window.contact_clicked.connect(lambda: self.display(windows['detailContact']))
@@ -76,7 +81,7 @@ class StackedWindow(QWidget):
         # setMaximumSize(QtCore.QSize(483, 16777215))
         hbox.addWidget(self.Stack)
         self.setLayout(hbox)
-        self.setMaximumSize(QtCore.QSize(483, 800))
+        self.setMaximumSize(QtCore.QSize(350, 650))
         self.show()
 
     # def onCurrentChanged(self, i):
@@ -94,6 +99,10 @@ class StackedWindow(QWidget):
 
         if contact_id is not None:
             self.Stack.currentWidget().setContact(contact_id)
+            contact_info = self.contacts_model.getContactInfofromId(contact_id)
+            self.setWindowTitle(contact_info[1] + ' ' + contact_info[2])
+        else:
+            self.setWindowTitle('Contact Manager')
         print('display: ', window_id, contact_id)
 
 

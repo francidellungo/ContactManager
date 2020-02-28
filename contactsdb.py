@@ -33,6 +33,14 @@ class ContactsDb:
         self.createContactsTagTable()
 
     """
+    TRIGGER EVENT
+    """
+
+    def createTrigger(self):
+        pass
+
+
+    """
     CONTACTS TABLE
     """
 
@@ -151,7 +159,14 @@ class ContactsDb:
 
     def getAllTags(self):
         # get list of tags in tags table
-        return [tag[0] for tag in self.connection.execute("SELECT * FROM tags").fetchall()]
+        return [tag[0] for tag in self.connection.execute("SELECT * FROM tags ORDER BY tag COLLATE NOCASE").fetchall()]
+
+    def deleteTag(self, tag):
+        # delete tag
+        # TODO: warning!! se cancello un tag poi devo andare a verificare se il tag è presente nei contatti e casomai levarlo
+        query = "DELETE FROM tags WHERE Tag='" + tag + "'"
+        self.connection.execute(query)
+        self.connection.commit()
 
     """
     CONTACTS - TAGS TABLE
@@ -188,7 +203,7 @@ class ContactsDb:
 
     def getAllContactsTags(self):
         # list of (contact_id, tag) ...
-        return [tag for tag in self.connection.execute("SELECT * FROM contacts_tags").fetchall()]
+        return [tag for tag in self.connection.execute("SELECT * FROM contacts_tags ORDER BY tag COLLATE NOCASE").fetchall()]
 
     def getContactsFromTag(self, tag):
         # get list of contacts_id for the given tag
@@ -197,6 +212,7 @@ class ContactsDb:
 
 
 # db = ContactsDb()
+# db.deleteTag(' ')
 # print(db.getAllContactsTags())
 # db.setContactTag('12', 'sport')
 # db.setContactTag('12', 'uni')

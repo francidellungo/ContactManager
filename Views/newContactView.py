@@ -1,17 +1,21 @@
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QCheckBox
+from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QCheckBox, QMessageBox, QInputDialog
 from ui.formDialog_ui import Ui_new_contact_form
 from contactsModel import ContactModel, ContactsListModel
 
 
 class NewContactView(QDialog):
-    def __init__(self, contacts_model):  # , contacts_tags_model
+    tag_added = pyqtSignal()
+
+    def __init__(self, contacts_model, tags_model):  # , contacts_tags_model
         super(NewContactView, self).__init__()
         self.ui = Ui_new_contact_form()
         self.ui.setupUi(self)
 
         # all contacts model (obj ContactsListModel)
         self.contacts_list_model = contacts_model
+        self.tags_model = tags_model
         # self.contacts_tags_model = contacts_tags_model
 
         # update contact_id when updating existent contact
@@ -20,6 +24,7 @@ class NewContactView(QDialog):
 
         # get user inputs for the new contact
         self.ui.buttonBox.accepted.connect(self.onAccepted)
+        self.ui.add_tag_pb.clicked.connect(self.addTag)
         # self.ui.buttonBox.accepted.connect(lambda: self.contacts_list_model.submitContact(self.contact_id,
         #                                                                                   self.ui.name_lineEdit.text(),
         #                                                                                   self.ui.surname_lineEdit.text(),
@@ -39,7 +44,7 @@ class NewContactView(QDialog):
         self.ui.surname_lineEdit.textChanged.connect(self.onChangeLine)
 
     def onAccepted(self):
-        # submit new contact details to model
+        # submit new contact details and tags to model
         tags_checked = [self.ui.tags_layout.itemAt(i).widget().objectName() for i in range(self.ui.tags_layout.count())
                         if self.ui.tags_layout.itemAt(i).widget().isChecked() is True]
         self.contacts_list_model.submitContact(self.contact_id,
@@ -68,15 +73,20 @@ class NewContactView(QDialog):
         self.ui.phone_lineEdit.clear()
         self.ui.email_lineEdit.clear()
         self.ui.notes_textEdit.clear()
+
+        # remove all tags (get ready for next time the view is open, there could be different tags!)
         for i in range(self.ui.tags_layout.count()):
             self.ui.tags_layout.itemAt(i).widget().deleteLater()
+            # self.ui.tags_layout.itemAt(i).widget().setChecked(False)
 
     def setContact(self, contact_id):
+        # set contact id
         self.contact_id = contact_id
         self.setContactDetails(self.contact_id)
 
     def setContactDetails(self, contact_id):
         # used to modify existing contact
+        # self.clearLines()
         # TODO fix contact_id must be str, but here is int and is fixed here but it's not ok
         print(contact_id, 'contact_id')
         # contact info
@@ -88,39 +98,39 @@ class NewContactView(QDialog):
         self.ui.email_lineEdit.setText(info[4])
         self.ui.notes_textEdit.setText(info[5])
 
-        # contact tags
+        # set contact tags
         contact_tags = self.contacts_list_model.getContactTags(str(contact_id))
+        self.setTags(contact_tags)
+
+    def setTags(self, contact_tags=None):
         all_tags = self.contacts_list_model.getAllTags()
         for tag in all_tags:
             tag_w = QCheckBox()
             tag_w.setObjectName(tag)
             tag_w.setText(tag)
-            if tag in contact_tags:
+            if contact_tags is not None and tag in contact_tags:
                 tag_w.setChecked(True)
-            # tag_w.setCheckable(False)
-
             self.ui.tags_layout.addWidget(tag_w)
 
-        # for tag_id in range(self.ui.tags_layout.count()):
-        #     if self.ui.tags_layout.itemAt(tag_id).widget().objectName() in tags:
-        #         self.ui.tags_layout.itemAt(tag_id).widget().setChecked(True)
+    def addTag(self):
+        all_tags = self.contacts_list_model.getAllTags()
 
-# class NewContactView_(QDialog):
-#     def __init__(self, model):
-#         super(NewContactView_, self).__init__()
-#         self.ui = Ui_new_contact_form()
-#         self.ui.setupUi(self)
-#         self.model = model
-#
-#         self.ui.buttonBox.button(QDialogButtonBox.Save).setEnabled(False)
-#
-#         # Enable save button when Name and Surname are given
-#         self.ui.name_lineEdit.textChanged.connect(self.onChangeLine)
-#         self.ui.surname_lineEdit.textChanged.connect(self.onChangeLine)
-#
-#     def onChangeLine(self):
-#         # Check if name and surname lines are empty or not, if they are given -> enable save button
-#         if self.ui.name_lineEdit.text() is not None and self.ui.name_lineEdit.text() != '' and self.ui.surname_lineEdit.text() is not None and self.ui.surname_lineEdit.text() != '':
-#             self.ui.buttonBox.button(QDialogButtonBox.Save).setEnabled(True)
-#         else:
-#             self.ui.buttonBox.button(QDialogButtonBox.Save).setEnabled(False)
+        text, ok = QInputDialog.getText(self, 'New tag', 'Enter new tag:')
+        while ok and (text == '' or text in all_tags):
+            if text == '':
+                text, ok = QInputDialog.getText(self, 'New tag', text + ' Please enter a valid tag:')
+            elif text in all_tags:
+                text, ok = QInputDialog.getText(self, 'New tag', text + ' tag already exists,\n please enter new tag:')
+
+        if ok and text not in all_tags:
+            self.tags_model.newTag(text)
+            # tag added signal emitted
+            self.tag_added.emit()
+            # TODO finish tag added signal
+
+        # refresh list of tags
+        for i in range(self.ui.tags_layout.count()):
+            self.ui.tags_layout.itemAt(i).widget().deleteLater()
+        self.setTags(self.contacts_list_model.getContactTags(self.contact_id))
+
+    #TODO finish add new tag!

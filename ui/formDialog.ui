@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>446</height>
+    <width>609</width>
+    <height>750</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,10 +22,10 @@
      <property name="bottomMargin">
       <number>0</number>
      </property>
-     <item row="1" column="0">
-      <widget class="QLabel" name="surname_label">
+     <item row="0" column="0">
+      <widget class="QLabel" name="name_label">
        <property name="text">
-        <string>Surname</string>
+        <string>Name</string>
        </property>
       </widget>
      </item>
@@ -39,10 +39,10 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="name_label">
+     <item row="1" column="0">
+      <widget class="QLabel" name="surname_label">
        <property name="text">
-        <string>Name</string>
+        <string>Surname</string>
        </property>
       </widget>
      </item>
@@ -93,13 +93,55 @@
      </item>
      <item row="4" column="1">
       <widget class="QTextEdit" name="notes_textEdit">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>100</height>
+        </size>
+       </property>
        <property name="placeholderText">
         <string>some notes...</string>
        </property>
       </widget>
      </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="birthdayLabel">
+       <property name="text">
+        <string>Birthday</string>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="1">
+      <widget class="QDateEdit" name="birthdayDateEdit">
+       <property name="displayFormat">
+        <string>dd/MM/yyyy</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="tags_label">
+       <property name="text">
+        <string>Tags</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
       <widget class="QScrollArea" name="tags_scrollArea">
+       <property name="minimumSize">
+        <size>
+         <width>317</width>
+         <height>150</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>400</height>
+        </size>
+       </property>
        <property name="widgetResizable">
         <bool>true</bool>
        </property>
@@ -108,33 +150,25 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>315</width>
-          <height>73</height>
+          <width>524</width>
+          <height>148</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="tags_layout">
-         <item>
-          <widget class="QCheckBox" name="sport">
-           <property name="text">
-            <string>sport</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="university">
-           <property name="text">
-            <string>university</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <layout class="QVBoxLayout" name="tags_layout"/>
        </widget>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="tags_label">
+     <item row="7" column="0">
+      <widget class="QLabel" name="image_label">
        <property name="text">
-        <string>Tags</string>
+        <string>Image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLabel" name="img_label">
+       <property name="text">
+        <string>img</string>
        </property>
       </widget>
      </item>
@@ -144,6 +178,13 @@
     <widget class="QPushButton" name="add_field_pb">
      <property name="text">
       <string>Add field</string>
+     </property>
+    </widget>
+   </item>
+   <item alignment="Qt::AlignLeft">
+    <widget class="QPushButton" name="add_tag_pb">
+     <property name="text">
+      <string>Add tag</string>
      </property>
     </widget>
    </item>

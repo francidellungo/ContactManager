@@ -15,3 +15,7 @@ class TagsModel(QObject):
         # create and add new tag
         self.contacts_db.addTag(tag_name)
 
+    def deleteTag(self, tag):
+        # delete a tag
+        self.contacts_db.deleteTag(tag)
+
