@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>609</width>
-    <height>750</height>
+    <width>400</width>
+    <height>638</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>400</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>New Contact</string>
@@ -62,6 +68,9 @@
      </item>
      <item row="2" column="1">
       <widget class="QLineEdit" name="phone_lineEdit">
+       <property name="maxLength">
+        <number>20</number>
+       </property>
        <property name="placeholderText">
         <string>phone</string>
        </property>
@@ -76,9 +85,6 @@
      </item>
      <item row="3" column="1">
       <widget class="QLineEdit" name="email_lineEdit">
-       <property name="inputMethodHints">
-        <set>Qt::ImhNone</set>
-       </property>
        <property name="placeholderText">
         <string>email</string>
        </property>
@@ -95,7 +101,7 @@
       <widget class="QTextEdit" name="notes_textEdit">
        <property name="maximumSize">
         <size>
-         <width>16777215</width>
+         <width>400</width>
          <height>100</height>
         </size>
        </property>
@@ -105,30 +111,13 @@
       </widget>
      </item>
      <item row="5" column="0">
-      <widget class="QLabel" name="birthdayLabel">
-       <property name="text">
-        <string>Birthday</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QDateEdit" name="birthdayDateEdit">
-       <property name="displayFormat">
-        <string>dd/MM/yyyy</string>
-       </property>
-       <property name="calendarPopup">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
       <widget class="QLabel" name="tags_label">
        <property name="text">
         <string>Tags</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="5" column="1">
       <widget class="QScrollArea" name="tags_scrollArea">
        <property name="minimumSize">
         <size>
@@ -150,7 +139,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>524</width>
+          <width>315</width>
           <height>148</height>
          </rect>
         </property>
@@ -158,17 +147,42 @@
        </widget>
       </widget>
      </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="image_label">
+     <item row="6" column="0">
+      <widget class="QPushButton" name="image_pb">
        <property name="text">
-        <string>Image</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset theme="image-x-generic">
+         <normaloff>.</normaloff>.</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLabel" name="img_label">
+       <property name="text">
+        <string>img</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QPushButton" name="birthday_pb">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../img/birthday.jpeg</normaloff>../img/birthday.jpeg</iconset>
        </property>
       </widget>
      </item>
      <item row="7" column="1">
-      <widget class="QLabel" name="img_label">
-       <property name="text">
-        <string>img</string>
+      <widget class="QDateEdit" name="birthdayDateEdit">
+       <property name="displayFormat">
+        <string>dd/MM/yyyy</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

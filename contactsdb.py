@@ -1,5 +1,5 @@
 import sqlite3
-from contactsModel import *
+# from contactsModel import *
 import uuid
 # conn = sqlite3.connect('contacts.db')
 # c = conn.cursor()
@@ -53,7 +53,7 @@ class ContactsDb:
             phone integer,
             email text,
             notes text
-            )""")
+            )""")  # , birthday date
         self.connection.commit()
 
     def deleteTable(self, table_name):
@@ -71,14 +71,15 @@ class ContactsDb:
 
     def addContact(self, contact):
         # generate new id for the contact
-        self.connection.execute("INSERT INTO contacts VALUES (:id, :name ,:surname, :phone, :email, :notes)",
+        self.connection.execute("INSERT INTO contacts VALUES (:id, :name ,:surname, :phone, :email, :notes)",  # , :birthday
                                 {
                                     'id': contact.id,
                                     'name': contact.name,
                                     'surname': contact.surname,
                                     'phone': contact.phone,
                                     'email': contact.email,
-                                    'notes': contact.notes
+                                    'notes': contact.notes  #,
+                                    # 'birthday': contact.birthday
                                 })
         self.connection.commit()
 
@@ -212,6 +213,16 @@ class ContactsDb:
 
 
 # db = ContactsDb()
+# db.deleteTag('hci')
+
+# conn = sqlite3.connect("contacts.db")
+# conn.execute("ALTER TABLE contacts DROP COLUMN birthday")
+# conn.commit()
+
+# print(db.getAllTags())
+# db.deleteTable('contacts')
+# db.deleteTable('tags')
+# db.deleteTable('contacts_tags')
 # db.deleteTag(' ')
 # print(db.getAllContactsTags())
 # db.setContactTag('12', 'sport')

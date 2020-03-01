@@ -47,6 +47,7 @@ class StackedWindow(QWidget):
         # behavior (when change stack item visualized)
         self.all_contacts_window.ui.newContact_pb.clicked.connect(lambda: self.display(self.windows['newContact']))
         self.all_contacts_window.ui.newContact_pb.clicked.connect(lambda: self.new_contacts_window.setTags())
+        self.all_contacts_window.ui.newContact_pb.clicked.connect(lambda: self.new_contacts_window.setContact(None))
 
         self.new_contacts_window.ui.buttonBox.accepted.connect(lambda: self.display(self.windows['allContacts'])) #, self.new_contacts_window.contact
         self.new_contacts_window.ui.buttonBox.accepted.connect(self.all_contacts_window.showContacts)
@@ -81,7 +82,9 @@ class StackedWindow(QWidget):
         # setMaximumSize(QtCore.QSize(483, 16777215))
         hbox.addWidget(self.Stack)
         self.setLayout(hbox)
-        self.setMaximumSize(QtCore.QSize(350, 650))
+        # self.setMaximumSize(QtCore.QSize(350, 650))
+        # self.Stack.setMaximumSize(QtCore.QSize(450, 650))
+        self.setFixedWidth(450)
         self.show()
 
     # def onCurrentChanged(self, i):
@@ -90,6 +93,8 @@ class StackedWindow(QWidget):
 
     def display(self, window_id, contact_id=None):
         self.Stack.setCurrentIndex(window_id)
+
+        self.setMaximumSize(QtCore.QSize(350, 650))
         # TODO: two instances no refresh in all contacts when one is changed (maybe delete contact_added,
         #  contact_removed and contact_updated and add these rows below (to refresh all contacts window) or
         #  get notifications from db when it is modified

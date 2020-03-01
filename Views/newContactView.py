@@ -1,5 +1,6 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QRegExp
+from PyQt5.QtGui import QRegExpValidator, QIntValidator
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QCheckBox, QMessageBox, QInputDialog
 from ui.formDialog_ui import Ui_new_contact_form
 from contactsModel import ContactModel, ContactsListModel
@@ -12,6 +13,19 @@ class NewContactView(QDialog):
         super(NewContactView, self).__init__()
         self.ui = Ui_new_contact_form()
         self.ui.setupUi(self)
+
+        # set input validator for name, surname
+        # reg_ex = QRegExp("([A-Z]|[a-z])+")
+        reg_ex = QRegExp("[a-zA-Z-àèéìòùç' ]+")
+        input_validator = QRegExpValidator(reg_ex, self.ui.name_lineEdit)
+        self.ui.name_lineEdit.setValidator(input_validator)
+        self.ui.surname_lineEdit.setValidator(input_validator)
+
+        num_ex = QRegExp("[0-9]+")
+        input_validator = QRegExpValidator(num_ex, self.ui.phone_lineEdit)
+        self.ui.phone_lineEdit.setValidator(input_validator)
+        # self.ui.phone_lineEdit.setMaxLength(20)
+        # self.ui.phone_lineEdit.setMaxLength(15)
 
         # all contacts model (obj ContactsListModel)
         self.contacts_list_model = contacts_model
@@ -39,6 +53,14 @@ class NewContactView(QDialog):
         self.ui.buttonBox.accepted.connect(self.clearLines)
         self.ui.buttonBox.rejected.connect(self.clearLines)
 
+        self.ui.birthdayDateEdit.setVisible(False)
+        self.ui.img_label.setVisible(False)
+
+        self.ui.birthday_pb.clicked.connect(self.clicked)
+        self.ui.image_pb.clicked.connect(self.clicked)
+
+        # self.ui.add_field_pb.clicked.connect(self.addNewField)
+
         # Enable save button when Name and Surname are given
         self.ui.name_lineEdit.textChanged.connect(self.onChangeLine)
         self.ui.surname_lineEdit.textChanged.connect(self.onChangeLine)
@@ -53,11 +75,23 @@ class NewContactView(QDialog):
                                                self.ui.phone_lineEdit.text(),
                                                self.ui.email_lineEdit.text(),
                                                self.ui.notes_textEdit.toPlainText(),
+                                               # TODO fix
+                                               # self.ui.birthdayDateEdit.date().toPyDate() if self.ui.birthdayDateEdit.isVisible() else '',
                                                tags_checked)
+        print(self.ui.birthdayDateEdit.date().toPyDate())
 
         # submit modifications to contact tags+
         # self.ui.tag1_checkBox.isChecked()
         # self.ui.tag1_checkBox.setChecked(True)
+
+    def clicked(self):
+        sender = self.sender().objectName()
+        if sender == 'birthday_pb':
+            visible = self.ui.birthdayDateEdit.isVisible()
+            self.ui.birthdayDateEdit.setVisible(not visible)
+        elif sender == 'image_pb':
+            visible = self.ui.img_label.isVisible()
+            self.ui.img_label.setVisible(not visible)
 
     def onChangeLine(self):
         # Check if name and surname lines are empty or not, if they are given -> enable save button
@@ -82,7 +116,8 @@ class NewContactView(QDialog):
     def setContact(self, contact_id):
         # set contact id
         self.contact_id = contact_id
-        self.setContactDetails(self.contact_id)
+        if contact_id is not None:
+            self.setContactDetails(self.contact_id)
 
     def setContactDetails(self, contact_id):
         # used to modify existing contact

@@ -10,14 +10,16 @@ class ContactModel:
         self.phone = ""
         self.email = ""
         self.notes = ""
+        # self.birthday = ""
 
-    def setFields(self, id, name, surname, phone=None, email=None, notes=None):
+    def setFields(self, id, name, surname, phone=None, email=None, notes=None):  # , birthday=None
         self.id = id
         self.name = name
         self.surname = surname
         self.phone = phone
         self.email = email
         self.notes = notes
+        # self.birthday = birthday
         # address, nickname
 
     def setContactId(self, id):
@@ -36,10 +38,10 @@ class ContactsListModel(QObject):
         super(ContactsListModel, self).__init__()
         self.contacts_db = ContactsDb()
 
-    def saveNewContact(self, name, surname, phone, email, notes):
+    def saveNewContact(self, name, surname, phone, email, notes):  # , birthday
         # generate id for new contact and add new contact to contacts_db, return new id generated
         contact = ContactModel()
-        contact.setFields(None, name, surname, phone, email, notes)
+        contact.setFields(None, name, surname, phone, email, notes)  # , birthday
         contact.setContactId(self.contacts_db.generateNewContactId())
         self.contacts_db.addContact(contact)
         # emit signal contact added to db
@@ -53,12 +55,12 @@ class ContactsListModel(QObject):
         # get id, name, surname,phone,email, notes of the given contact
         return self.contacts_db.getContactInfo(c_id)
 
-    def submitContact(self, id, name, surname, phone, email, notes, tags_checked):
+    def submitContact(self, id, name, surname, phone, email, notes, tags_checked):  # birthday,
         # check if contact was already in db or not
         if id is None:
-            id = self.saveNewContact(name, surname, phone, email, notes)
+            id = self.saveNewContact(name, surname, phone, email, notes)  # , birthday
         else:
-            self.updateContact(id, name, surname, phone, email, notes)
+            self.updateContact(id, name, surname, phone, email, notes) # , birthday
             self.contact_updated.emit()
 
         self.submitContactTags(id, tags_checked)
