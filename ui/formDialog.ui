@@ -147,58 +147,16 @@
        </widget>
       </widget>
      </item>
-     <item row="6" column="0">
-      <widget class="QPushButton" name="image_pb">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset theme="image-x-generic">
-         <normaloff>.</normaloff>.</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLabel" name="img_label">
-       <property name="text">
-        <string>img</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QPushButton" name="birthday_pb">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../img/birthday.jpeg</normaloff>../img/birthday.jpeg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QDateEdit" name="birthdayDateEdit">
-       <property name="displayFormat">
-        <string>dd/MM/yyyy</string>
-       </property>
-       <property name="calendarPopup">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
     </layout>
-   </item>
-   <item alignment="Qt::AlignLeft">
-    <widget class="QPushButton" name="add_field_pb">
-     <property name="text">
-      <string>Add field</string>
-     </property>
-    </widget>
    </item>
    <item alignment="Qt::AlignLeft">
     <widget class="QPushButton" name="add_tag_pb">
      <property name="text">
       <string>Add tag</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../img/newTag.jpeg</normaloff>../img/newTag.jpeg</iconset>
      </property>
     </widget>
    </item>

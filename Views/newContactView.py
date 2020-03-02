@@ -54,12 +54,6 @@ class NewContactView(QDialog):
         self.ui.buttonBox.accepted.connect(self.clearLines)
         self.ui.buttonBox.rejected.connect(self.clearLines)
 
-        self.ui.birthdayDateEdit.setVisible(False)
-        # self.ui.img_label.setVisible(False)
-        self.birthday_visible = self.ui.birthdayDateEdit.isVisible()
-
-        # self.ui.add_field_pb.clicked.connect(self.addNewField)
-
         # Enable save button when Name and Surname are given
         self.ui.name_lineEdit.textChanged.connect(self.onChangeLine)
         self.ui.surname_lineEdit.textChanged.connect(self.onChangeLine)

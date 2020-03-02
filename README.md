@@ -20,6 +20,15 @@ It is also possible to filter contacts by ***tags*** assigned to each contact an
 
 - **Editing contact**: this view is the same as when a new contact is inserted, but in this case the fields already filled of the selected contact are kept and it is possible to ***modify each field***.
 
+Fig. 1: all contacts            |  Fig. 2: new contact
+:-------------------------:|:-------------------------:
+![alt text](./readme_imgs/allContacts.png) | ![alt text](./readme_imgs/newContact.png)
+
+Fig. 3: contact details     |  Fig. 2: edit existing contact 
+:-------------------------:|:-------------------------:
+![alt text](./readme_imgs/contactDetails.png) | ![alt text](./readme_imgs/editContact.png)
+
+
 ## Run the application
 - from terminal go to the directory in which you have downloaded the project
 - go inside the ContactManager folder using the command:  `cd ContactManager`

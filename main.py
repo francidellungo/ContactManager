@@ -76,6 +76,7 @@ class StackedWindow(QWidget):
         hbox = QHBoxLayout(self)
         hbox.addWidget(self.Stack)
         self.setLayout(hbox)
+        self.setMaximumSize(QtCore.QSize(350, 650))
         self.setFixedWidth(450)
         self.show()
 
