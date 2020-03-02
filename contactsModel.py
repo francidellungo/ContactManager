@@ -18,7 +18,6 @@ class ContactModel:
         self.phone = phone
         self.email = email
         self.notes = notes
-        # address, nickname
 
     def setContactId(self, id):
         self.id = id
@@ -42,6 +41,7 @@ class ContactsListModel(QObject):
         contact.setFields(None, name, surname, phone, email, notes)
         contact.setContactId(self.contacts_db.generateNewContactId())
         self.contacts_db.addContact(contact)
+
         # emit signal contact added to db
         self.contact_added.emit()
         return contact.getId()
@@ -82,9 +82,9 @@ class ContactsListModel(QObject):
 
     # tags
 
-    def setTag(self, tags: list):
-        self.contacts_db.addTag()
-        # tags is a list of tags for this contact
+    # def setTag(self, tags: list):
+    #     self.contacts_db.addTag()
+    #     # tags is a list of tags for this contact
 
     def submitContactTags(self, contact_id, new_tags):
         contact_id = str(contact_id)
@@ -109,4 +109,3 @@ class ContactsListModel(QObject):
     def getContactsFromTag(self, tag: str) -> list:
         # return list of id of the contacts that have the specified tag
         return self.contacts_db.getContactsFromTag(tag)
-

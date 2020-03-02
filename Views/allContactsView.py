@@ -25,27 +25,27 @@ class AllContactsView(QMainWindow):
         # set tags
         self.ui.tags_combo_box.addItems(self.tags_model.getAllTags())
 
-        # connect buttons to slots
+        # refresh contacts list when order by or search term
         self.ui.sort_combobox.currentIndexChanged.connect(self.showContacts)
         self.ui.search_pb.clicked.connect(self.showContacts)
 
         # enter button clicked on search line -> search term on line edit
         self.ui.search_line_edit.editingFinished.connect(self.showContacts)
 
-        # changed tag entry
+        # refresh contacts list tag entry is changed
         self.ui.tags_combo_box.currentIndexChanged.connect(self.showContacts)
 
         # refresh contacts list if a contact is added or removed
-        # TODO:
         self.model.contact_added.connect(self.showContacts)
         self.model.contact_removed.connect(self.showContacts)
         self.model.contact_updated.connect(self.showContacts)
 
-    def showContacts(self, contacts_=None):
+    def showContacts(self):
+        """
+        Show list of all contacts saved ordered by name/surname, (if selected) filtered by tag and/or term
+        """
         # clear contacts
-        self.refreshContacts()
-        # TODO check tag field, ordinamento and search
-        # contacts = (contacts_ if contacts_ is not None else self.model.getAllContacts())
+        self.clearContacts()
 
         # check order by (name/surname)
         sort_id = self.ui.sort_combobox.currentIndex()
@@ -59,16 +59,15 @@ class AllContactsView(QMainWindow):
             contacts_ids_s = self.model.searchTerm(term)  # list of id of the contacts
             contacts = [c for c in contacts if c[0] in contacts_ids_s]
 
-        # TODO: check tag ...
+        # check selected tag
         if self.ui.tags_combo_box.currentText() != '':
             contacts_ids_t = self.model.getContactsFromTag(self.ui.tags_combo_box.currentText())
             contacts = [c for c in contacts if c[0] in contacts_ids_t]
 
-        # contacts = self.model.getAllContacts()
+        # show contacts
         for id, contact in enumerate(contacts):
             new_contact = QtWidgets.QPushButton(self.ui.contacts_scrollAreaW)
             new_contact.setFlat(True)
-            # new_label.setParent(self.ui.contacts_scrollAreaW)
             new_contact.setText(contact[1] + ' ' + contact[2])
             new_contact.setObjectName(str(contact[0]))
             if id != 0:
@@ -80,43 +79,26 @@ class AllContactsView(QMainWindow):
             self.ui.contacts_layout.addWidget(new_contact)
             new_contact.clicked.connect(self.clicked)
 
-    def refreshContacts(self, contacts=None):
+    def clearContacts(self):
         for i in reversed(range(self.ui.contacts_layout.count())):
             item = self.ui.contacts_layout.itemAt(i).widget()
             item.deleteLater()
-            # self.ui.contacts_layout.removeWidget(item)
-        # print('removed all contacts', self.ui.contacts_layout.count())
-        # self.showContacts(contacts)
 
-    def sortBy(self, field, mode='ASC'):
+    def sortBy(self, field):
         # field name to sort by
-        # field_to_sort = ('name' if field == 0 else 'surname')
         contacts = self.model.getAllContacts(field)
-        # self.refreshContacts(contacts)
         return contacts
 
     def clicked(self):
         sender_id = int(self.sender().objectName())
-        print('contact clicked, sender_id: ', sender_id)
         # send id of the contact
         self.contact_clicked.emit(sender_id)
-
-    def searchTerm(self):
-        # TODO: search more than one word
-        term = self.ui.search_line_edit.text()
-        contacts_ids = self.model.searchTerm(term)
-        # self.showContacts(contacts_ids)
-        print(contacts_ids)
 
     def refreshTags(self):
         # refresh tags in comboBox
         for i in range(self.ui.tags_combo_box.count()):
             self.ui.tags_combo_box.clear()
-            # self.ui.tags_combo_box.item
 
-        # all_tags = self.tags_model.getAllTags()
-        # for tag in all_tags:
-        #     self.ui.tags_combo_box.addItem(tag)
         self.ui.tags_combo_box.addItem('')
         [self.ui.tags_combo_box.addItem(tag) for tag in self.tags_model.getAllTags()]
 

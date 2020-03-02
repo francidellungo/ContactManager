@@ -1,6 +1,5 @@
-import os
-from PyQt5 import Qt, QtCore
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QDialog, QMessageBox, QCheckBox, QHBoxLayout, QWidget
 from ui.contactDetails_ui import Ui_Dialog
@@ -34,7 +33,6 @@ class ContactDetails(QDialog):
     def setTagIcon(self):
         # set tag icon
         icon_label = QtWidgets.QLabel()
-        # todo fix
         pixmap = QPixmap(self.icons[3])
         pixmap = pixmap.scaledToWidth(20)
         pixmap = pixmap.scaledToHeight(20)
@@ -55,12 +53,12 @@ class ContactDetails(QDialog):
     def showDetails(self, contact_id):
         # get contact info from model
         contact_details = list(self.model.getContactInfofromId(contact_id))[1:]
+
         # set window title: contact name and surname
         self.ui.contact_label.setText(contact_details[0] + ' ' + contact_details[1])
 
         # set contact details (icon and text)
         for detail_idx, detail in enumerate(contact_details):
-            # TODO fix here detail_idx != 0 and detail_idx != 1
             if detail != '' and detail_idx != 0 and detail_idx != 1:
                 # no icon for name and surname
                 if detail_idx != 0 and detail_idx != 1:
@@ -86,28 +84,8 @@ class ContactDetails(QDialog):
             # add tag to tag layout
             self.ui.tags_layout.addWidget(tag_w)
 
-            # if detail != '':
-                # layout = QtWidgets.QHBoxLayout()
-                # field_icon = QtWidgets.QLabel()
-                # pixmap = QPixmap('img/phoneIcon2.png')
-                # field_icon.setPixmap(pixmap.scaledToWidth(30))
-                # # self.resize(pixmap.width(), pixmap.height())
-                # layout.addWidget(field_icon)
-                # layout.addWidget(QtWidgets.QLabel((str(detail) if detail is not None else ' ')))
-                # self.ui.contact_info_layout.addWidget(QtWidgets.QLabel((str(detail) if detail is not None else ' ')))
-                # self.ui.contact_info_layout.addWidget(layout.widget())
-
-                # self.horiz = QtWidgets.QHBoxLayout(self)
-                # self.img_label = QLabel()
-                # self.img_label.setScaledContents(True)
-                # pixmap = QPixmap(os.path.join('img', 'phoneIcon2.png'))
-                # self.img_label.setPixmap(pixmap)
-                # self.img_label.setFixedSize(150, 150)
-                # self.horiz.addWidget(self.img_label)
-                # self.horiz.addWidget(QtWidgets.QLabel(str(detail)))
-                # self.ui.contact_info_layout.addWidget(self.horiz.widget())
-
     def clearLines(self):
+        # clear contact details
         self.ui.contact_label.clear()
         for i in reversed(range(self.ui.contact_info_layout.count())):
             item = self.ui.contact_info_layout.itemAt(i).widget()
@@ -132,7 +110,6 @@ class Row(QWidget):
         # add text to horizontal layout
         if text is not None:
             # set element text
-            # todo fix here
             if self.detail_idx != 4:  # notes
                 self.text = QtWidgets.QLabel(text)
             else:

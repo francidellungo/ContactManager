@@ -24,9 +24,28 @@ Fig. 1: all contacts            |  Fig. 2: new contact
 :-------------------------:|:-------------------------:
 ![alt text](./readme_imgs/allContacts.png) | ![alt text](./readme_imgs/newContact.png)
 
-Fig. 3: contact details     |  Fig. 2: edit existing contact 
+Fig. 3: contact details     |  Fig. 4: edit existing contact
 :-------------------------:|:-------------------------:
 ![alt text](./readme_imgs/contactDetails.png) | ![alt text](./readme_imgs/editContact.png)
+
+
+### Data management
+A **sqlite database** was used to store the contact data.
+ For each contact you can enter the following fields:
+- name
+- surname
+- phone number
+- email 
+- notes
+- more than one tag
+
+As mentioned above, you can select one of the existing tags or create a new one.
+
+## Requirements
+Python 3.7.3 was used to run this project.
+The only package you need to install is PyQt5:
+- `conda install -c anaconda pyqt` (with anaconda)
+- `pip install PyQt5` (with pip)
 
 
 ## Run the application

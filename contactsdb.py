@@ -1,27 +1,4 @@
 import sqlite3
-# from contactsModel import *
-import uuid
-# conn = sqlite3.connect('contacts.db')
-# c = conn.cursor()
-#
-# contact1 = ContactModel('franci', 'delluu', phone=3232)
-# # c.execute("""CREATE TABLE contacts(
-# #     name text,
-# #     surname text,
-# #     phone integer
-# #     )""")
-#
-# # c.execute("INSERT INTO contacts VALUES ('Fra', 'Delld', 34343)")
-# # version 2
-# # c.execute("INSERT INTO contacts VALUES (:name , :surname, :phone)", {'name': str(contact1.name), 'surname': contact1.surname, 'phone': contact1.phone})
-# # conn.commit()
-# c.execute("SELECT * FROM contacts WHERE name='franci'")
-#
-#
-#
-# print(c.fetchall())
-# conn.commit()
-# conn.close()
 
 
 class ContactsDb:
@@ -31,14 +8,6 @@ class ContactsDb:
         tags = ['sport', 'university', 'work', 'cinema']
         self.createTagTable(tags)
         self.createContactsTagTable()
-
-    """
-    TRIGGER EVENT
-    """
-
-    def createTrigger(self):
-        pass
-
 
     """
     CONTACTS TABLE
@@ -57,6 +26,7 @@ class ContactsDb:
         self.connection.commit()
 
     def deleteTable(self, table_name):
+        # delete db table
         query = "DROP TABLE IF EXISTS " + table_name
         self.connection.execute(query)
         self.connection.commit()
@@ -102,7 +72,6 @@ class ContactsDb:
     def updateContact(self, contact_id, name, surname, phone, email, notes):
         # update info for the contact specified in the contact_id
         # contact is ContactModel obj
-        # print('updateContact: ', name, ' ', surname)
         query = "UPDATE contacts SET name=" + str("'") + name + str("'") + ", surname=" + str("'") + surname + str("'") + \
                 ', phone =' + str("'") + str(phone) + str("'") + ', email=' + str("'") + email + str("'") + ', notes=' + str("'") + notes + str("'") + ' WHERE id = ' + str(contact_id)
         self.connection.execute(query)
@@ -113,7 +82,6 @@ class ContactsDb:
         if contact_id is None:
             return False
         query = 'SELECT name from contacts Where id =' + str(contact_id)
-        # print('is contact in db: ', contact_id, ' ', query)
         contact = self.connection.execute(query).fetchone()
         return contact is not None
 
@@ -124,12 +92,6 @@ class ContactsDb:
         self.connection.commit()
 
     def searchWord(self, word):
-        # # TODO fix
-        # self.connection.execute("CREATE VIRTUAL TABLE IF NOT EXISTS complete USING fts5(id,name,surname,phone,email,notes)")
-        # query = "SELECT * FROM complete WHERE complete = " + word
-        # match = self.connection.execute(query)
-        # # match = self.connection.execute("SELECT count(*), * FROM complete")
-        # # print([el for el in match])
         query = "SELECT id FROM contacts WHERE name LIKE " + str("'%") + word + str("%' or surname LIKE ") + str("'%") + word + str("%' or phone LIKE ") + str("'%") + word + str("%' or email LIKE ") + str("'%") + word + str("%' or notes LIKE ") + str("'%") + word + str("%'")
 
         # list of ids of contacts in which the term is present
@@ -163,7 +125,6 @@ class ContactsDb:
 
     def deleteTag(self, tag):
         # delete tag
-        # TODO: warning!! se cancello un tag poi devo andare a verificare se il tag è presente nei contatti e casomai levarlo
         query = "DELETE FROM tags WHERE Tag='" + tag + "'"
         self.connection.execute(query)
         self.connection.commit()
