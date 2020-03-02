@@ -53,7 +53,7 @@ class ContactsDb:
             phone integer,
             email text,
             notes text
-            )""")  # , birthday date
+            )""")
         self.connection.commit()
 
     def deleteTable(self, table_name):
@@ -71,15 +71,14 @@ class ContactsDb:
 
     def addContact(self, contact):
         # generate new id for the contact
-        self.connection.execute("INSERT INTO contacts VALUES (:id, :name ,:surname, :phone, :email, :notes)",  # , :birthday
+        self.connection.execute("INSERT INTO contacts VALUES (:id, :name ,:surname, :phone, :email, :notes)",
                                 {
                                     'id': contact.id,
                                     'name': contact.name,
                                     'surname': contact.surname,
                                     'phone': contact.phone,
                                     'email': contact.email,
-                                    'notes': contact.notes  #,
-                                    # 'birthday': contact.birthday
+                                    'notes': contact.notes
                                 })
         self.connection.commit()
 
@@ -211,37 +210,3 @@ class ContactsDb:
         return [int(c_id[0]) for c_id in self.connection.execute("SELECT contact_id FROM contacts_tags WHERE tag='" + tag + "'")]
 
 
-
-# db = ContactsDb()
-# db.deleteTag('hci')
-
-# conn = sqlite3.connect("contacts.db")
-# conn.execute("ALTER TABLE contacts DROP COLUMN birthday")
-# conn.commit()
-
-# print(db.getAllTags())
-# db.deleteTable('contacts')
-# db.deleteTable('tags')
-# db.deleteTable('contacts_tags')
-# db.deleteTag(' ')
-# print(db.getAllContactsTags())
-# db.setContactTag('12', 'sport')
-# db.setContactTag('12', 'uni')
-# print(db.getContactTags('12'))
-# # db.deleteTable('tags')
-# print(db.addTag('Work'))
-# print(db.getAllTags())
-
-# print(db.searchWord('Gi'))
-
-# # DB.connection.execute("ATTACH contacts.db AS my_db")
-# # tab = DB.connection.execute("SELECT name FROM contacts.db.sqlite_master WHERE type='table'")
-# # print(tab)
-# DB.createTable()
-# print(DB.isContactInDb(17))
-# DB.deleteContactTable('contacts')
-# DB.searchWord('1')
-# print([el for el in DB.getAllContacts()])
-# contact1 = ContactModel('franci1', 'dellu', 43564, 'dsad@dss', 'dwdwds')
-# DB.addContact(contact1)
-# DB.deleteContact(0)

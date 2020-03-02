@@ -75,9 +75,6 @@ class ContactDetails(QDialog):
         all_tags = self.model.getAllTags()
         contact_tags = self.model.getContactTags(contact_id)
 
-
-
-
         for tag in all_tags:
             tag_w = QCheckBox()
             tag_w.setObjectName(tag)
@@ -136,7 +133,7 @@ class Row(QWidget):
         if text is not None:
             # set element text
             # todo fix here
-            if self.detail_idx != 4:
+            if self.detail_idx != 4:  # notes
                 self.text = QtWidgets.QLabel(text)
             else:
                 self.text = QtWidgets.QTextBrowser()

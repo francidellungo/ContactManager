@@ -34,6 +34,7 @@ class NewContactView(QDialog):
 
         # update contact_id when updating existent contact
         self.contact_id = None
+
         self.ui.buttonBox.button(QDialogButtonBox.Save).setEnabled(False)
 
         # get user inputs for the new contact
@@ -54,10 +55,8 @@ class NewContactView(QDialog):
         self.ui.buttonBox.rejected.connect(self.clearLines)
 
         self.ui.birthdayDateEdit.setVisible(False)
-        self.ui.img_label.setVisible(False)
-
-        self.ui.birthday_pb.clicked.connect(self.clicked)
-        self.ui.image_pb.clicked.connect(self.clicked)
+        # self.ui.img_label.setVisible(False)
+        self.birthday_visible = self.ui.birthdayDateEdit.isVisible()
 
         # self.ui.add_field_pb.clicked.connect(self.addNewField)
 
@@ -75,23 +74,7 @@ class NewContactView(QDialog):
                                                self.ui.phone_lineEdit.text(),
                                                self.ui.email_lineEdit.text(),
                                                self.ui.notes_textEdit.toPlainText(),
-                                               # TODO fix
-                                               # self.ui.birthdayDateEdit.date().toPyDate() if self.ui.birthdayDateEdit.isVisible() else '',
                                                tags_checked)
-        print(self.ui.birthdayDateEdit.date().toPyDate())
-
-        # submit modifications to contact tags+
-        # self.ui.tag1_checkBox.isChecked()
-        # self.ui.tag1_checkBox.setChecked(True)
-
-    def clicked(self):
-        sender = self.sender().objectName()
-        if sender == 'birthday_pb':
-            visible = self.ui.birthdayDateEdit.isVisible()
-            self.ui.birthdayDateEdit.setVisible(not visible)
-        elif sender == 'image_pb':
-            visible = self.ui.img_label.isVisible()
-            self.ui.img_label.setVisible(not visible)
 
     def onChangeLine(self):
         # Check if name and surname lines are empty or not, if they are given -> enable save button
@@ -161,11 +144,9 @@ class NewContactView(QDialog):
             self.tags_model.newTag(text)
             # tag added signal emitted
             self.tag_added.emit()
-            # TODO finish tag added signal
 
         # refresh list of tags
         for i in range(self.ui.tags_layout.count()):
             self.ui.tags_layout.itemAt(i).widget().deleteLater()
         self.setTags(self.contacts_list_model.getContactTags(self.contact_id))
 
-    #TODO finish add new tag!
