@@ -1,4 +1,4 @@
-# ContactManager
+# Contact Manager
 This project is a contact management application.
 The programming language used is python, and pyqt5 was used for the graphic interface.
 
